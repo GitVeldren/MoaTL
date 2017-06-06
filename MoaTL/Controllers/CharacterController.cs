@@ -2,6 +2,7 @@
 using MoaTL.Models;
 using System.Linq;
 using System.Web.Mvc;
+using MoaTL.ViewModels;
 
 namespace MoaTL.Controllers
 {
@@ -24,6 +25,17 @@ namespace MoaTL.Controllers
             var player = User.Identity.GetUserId();
             var characters = _context.Characters.Where(c => c.Player.Id == player).ToList();
             return View(characters);
+        }
+
+        public ActionResult Detail(Character character)
+        {
+            var InventoryViewModel = new InventoryViewModel
+            {
+                Character = _context.Characters.Single(c => c.Id == character.Id)
+            };
+
+
+            return View(InventoryViewModel);
         }
 
         public ActionResult Create()

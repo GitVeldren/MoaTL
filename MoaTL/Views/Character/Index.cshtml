@@ -17,6 +17,7 @@
             <th>Character</th>
             <th>Class</th>
             <th>Wealth</th>
+            <th>Update</th>
             <th>Delete</th>
         </tr>
     </thead>
@@ -24,9 +25,10 @@
         @foreach (var character in Model)
             {
             <tr>
-                <td>@Html.ActionLink(character.Name, "Edit", "Character", new { id = character.Id }, null)</td>
+                <td>@Html.ActionLink(character.Name, "Index", "Inventory", new { id = character.Id }, null)</td>
                 <td>@character.PlayerClass</td>
                 <td>@character.Wealth</td>
+                <td>@Html.ActionLink(character.Name, "Edit", "Character", new { id = character.Id }, null)</td>
                 <td>
                     <button data-character-id="@character.Id" class="btn-link js-delete">Delete</button>
                 </td>
