@@ -1,0 +1,88 @@
+﻿@model MoaTL.ViewModels.PartyViewModel
+
+    @{
+        ViewBag.Title = "Edit";
+        Layout = "~/Views/Shared/_Layout.cshtml";
+    }
+
+    <h2>Edit</h2>
+
+    @using (Html.BeginForm())
+    {
+        @Html.AntiForgeryToken()
+
+        <div class="form-horizontal">
+            <h4>Party</h4>
+            <hr />
+            @Html.ValidationSummary(true, "", new { @class = "text-danger" })
+
+            <div class="form-group">
+                @Html.LabelFor(model => model.Name, htmlAttributes: new { @class = "control-label col-md-2" })
+                <div class="col-md-10">
+                    @Html.EditorFor(model => model.Name, new { htmlAttributes = new { @class = "form-control" } })
+                    @Html.ValidationMessageFor(model => model.Name, "", new { @class = "text-danger" })
+                </div>
+            </div>
+
+            <label>Available characters</label>
+            <table id="characters" class="table table-bordered table-hover">
+                <thead>
+                    <tr>
+                        <th>Name</th>
+                        <th>Class</th>
+                        <th>Wealth</th>
+                        <th>Player</th>
+                        <th></th>
+                    </tr>
+                </thead>
+                <tbody>
+                    @foreach (var character in Model.Characters)
+                {
+                        <tr>
+                            <td>@character.Name</td>
+                            <td>@character.PlayerClass</td>
+                            <td>@character.Wealth</td>
+                            <td>@character.PlayerName</td>
+                            <td>
+                                <button id="btnAdd" type="button" data-character="@character" data-character-name="@character.Name" class="btn btn-info js-add">Add</button>
+                            </td>
+                        </tr>
+                    }
+                </tbody>
+            </table>
+            <hr />
+            <label>Party Members</label>
+            <ul id="party" class="table table-bordered table-hover"></ul>
+
+            <div class="form-group">
+                <div class="col-md-offset-2 col-md-10">
+                    <input type="submit" value="Save" class="btn btn-default" />
+                </div>
+            </div>
+        </div>
+    }
+
+    <div>
+        @Html.ActionLink("Back to List", "Index")
+    </div>
+
+    @section scripts
+{
+        <script>
+            $(document).ready(function () {
+                $("#characters").DataTable();
+
+                $("#characters").on("click", ".js-add", function () {
+                    var button = $(this);
+                    bootbox.confirm("Recruit this character into your party?", function (result) {
+                        if (result) {
+                            $.ajax({
+                                url: "/api/parties/" + button.attr("data-character"),
+                                method: "POST"
+                            });
+                        }
+                    });
+                });
+            });
+        </script>
+    }

@@ -1,0 +1,62 @@
+﻿@using MoaTL.Models
+@model IEnumerable<Item>
+
+@{
+    ViewBag.Title = "Items";
+    Layout = "~/Views/Shared/_Layout.cshtml";
+}
+
+<h2>Items</h2>
+
+<p>
+    @Html.ActionLink("Add", "Create")
+</p>
+
+<table id="items" class="table table-bordered table-hover">
+    <thead>
+        <tr>
+            <th>Item</th>
+            <th>Type</th>
+            <th>Subtybe</th>
+            <th>Price</th>
+            <th>Delete</th>
+        </tr>
+    </thead>
+    <tbody>
+        @foreach (var item in Model)
+            {
+            <tr>
+                <td>@Html.ActionLink(item.Name, "Edit", "Items", new { id = item.Id }, null)</td>
+                <td>@item.Type</td>
+                <td>@item.SubType</td>
+                <td>@item.Price</td>
+                <td>
+                    <button data-item-id="@item.Id" class="btn-link js-delete">Delete</button>
+                </td>
+            </tr>
+        }
+    </tbody>
+</table>
+
+@section scripts
+{
+    <script>
+        $(document).ready(function () {
+            $("#items").DataTable();
+            $("#items").on("click", ".js-delete", function () {
+                var button = $(this);
+                bootbox.confirm("Are you sure you want to delete this item?", function (result) {
+                    if (result) {
+                        $.ajax({
+                            url: "/api/items/" + button.attr("data-item-id"),
+                            method: "DELETE",
+                            success: function () {
+                                button.parents("tr").remove();
+                            }
+                        });
+                    }
+                });
+            });
+        });
+    </script>
+}
